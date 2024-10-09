@@ -29,11 +29,17 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
 
+    - name: Display project structure
+      run: ls -R
+
+    - name: Display Gradle tasks
+      run: ./gradlew tasks --all
+
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build --info
 
     - name: Build debug APK
-      run: ./gradlew assembleDebug
+      run: ./gradlew :app:assembleDebug --info
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
