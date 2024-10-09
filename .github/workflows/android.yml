@@ -1,6 +1,6 @@
 name: Android CI
 
-on:
+      on:
   push:
     branches: [ main ]
   pull_request:
@@ -13,12 +13,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # Check if gradlew exists, if not, generate the Gradle wrapper
-    - name: Check if Gradle Wrapper exists
+    # Install Gradle if gradlew is missing
+    - name: Install Gradle if gradlew is missing
       run: |
         if [ ! -f gradlew ]; then
-          echo "gradlew not found, generating Gradle wrapper..."
-          ./gradlew wrapper
+          echo "gradlew not found, installing Gradle and generating wrapper..."
+          sudo apt-get update
+          sudo apt-get install -y gradle
+          gradle wrapper
         else
           echo "gradlew already exists."
         fi
