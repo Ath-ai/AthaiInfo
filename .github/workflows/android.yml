@@ -1,10 +1,12 @@
 name: Android CI
 
-      on:
+on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -23,8 +25,7 @@ jobs:
           gradle wrapper
         else
           echo "gradlew already exists."
-        fi
-
+    
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
