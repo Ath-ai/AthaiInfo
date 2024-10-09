@@ -23,9 +23,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gradle
           gradle wrapper
-        else
-          echo "gradlew already exists."
-    
+        fi
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
