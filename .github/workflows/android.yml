@@ -23,6 +23,11 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Download Gradle wrapper
+      run: |
+        mkdir -p gradle/wrapper
+        wget -O gradle/wrapper/gradle-wrapper.jar https://github.com/gradle/gradle/raw/master/gradle/wrapper/gradle-wrapper.jar
+
     - name: Build with Gradle
       run: ./gradlew build
 
