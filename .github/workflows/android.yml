@@ -12,15 +12,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: set up JDK 11
+
+    # Check if gradlew exists, if not, generate the Gradle wrapper
+    - name: Check if Gradle Wrapper exists
+      run: |
+        if [ ! -f gradlew ]; then
+          echo "gradlew not found, generating Gradle wrapper..."
+          ./gradlew wrapper
+        else
+          echo "gradlew already exists."
+        fi
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Set up JDK 11
       uses: actions/setup-java@v2
       with:
         java-version: '11'
         distribution: 'adopt'
         cache: gradle
-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
 
     - name: Build with Gradle
       run: ./gradlew build
