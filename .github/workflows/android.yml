@@ -28,9 +28,28 @@ jobs:
         mkdir -p gradle/wrapper
         wget -O gradle/wrapper/gradle-wrapper.jar https://github.com/gradle/gradle/raw/master/gradle/wrapper/gradle-wrapper.jar
 
+    - name: Check project structure
+      run: |
+        echo "Project Structure:"
+        ls -R
+        echo "build.gradle contents:"
+        cat build.gradle
+        echo "app/build.gradle contents:"
+        cat app/build.gradle
+        echo "settings.gradle contents:"
+        cat settings.gradle
+
     - name: Build with Gradle
-      run: ./gradlew build --stacktrace --info --debug > gradle_output.log 2>&1
+      run: ./gradlew build --stacktrace --info > gradle_output.log 2>&1
       continue-on-error: true
+
+    - name: Display Gradle output
+      if: always()
+      run: cat gradle_output.log
+
+    - name: Generate Gradle build scan
+      if: failure()
+      run: ./gradlew build --scan --stacktrace --info
 
     - name: Upload Gradle output
       uses: actions/upload-artifact@v3
@@ -48,7 +67,7 @@ jobs:
           build/reports
 
     - name: Build debug APK
-      run: ./gradlew assembleDebug --stacktrace --info --debug
+      run: ./gradlew assembleDebug --stacktrace --info
       if: success()
 
     - name: Upload debug APK
