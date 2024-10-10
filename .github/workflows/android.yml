@@ -29,20 +29,31 @@ jobs:
         wget -O gradle/wrapper/gradle-wrapper.jar https://github.com/gradle/gradle/raw/master/gradle/wrapper/gradle-wrapper.jar
 
     - name: Build with Gradle
-      run: ./gradlew build --stacktrace --info --debug
+      run: ./gradlew build --stacktrace --info --debug > gradle_output.log 2>&1
+      continue-on-error: true
+
+    - name: Upload Gradle output
+      uses: actions/upload-artifact@v3
+      with:
+        name: gradle-output
+        path: gradle_output.log
 
     - name: Upload build reports
-      if: failure()
+      if: always()
       uses: actions/upload-artifact@v3
       with:
         name: build-reports
-        path: app/build/reports
+        path: |
+          app/build/reports
+          build/reports
 
     - name: Build debug APK
       run: ./gradlew assembleDebug --stacktrace --info --debug
+      if: success()
 
     - name: Upload debug APK
       uses: actions/upload-artifact@v3
+      if: success()
       with:
         name: app-debug
         path: app/build/outputs/apk/debug/app-debug.apk
@@ -50,6 +61,7 @@ jobs:
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
+      if: success()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -60,6 +72,7 @@ jobs:
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
+      if: success()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
