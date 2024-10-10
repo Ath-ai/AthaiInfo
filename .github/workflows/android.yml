@@ -28,11 +28,19 @@ jobs:
         mkdir -p gradle/wrapper
         wget -O gradle/wrapper/gradle-wrapper.jar https://github.com/gradle/gradle/raw/master/gradle/wrapper/gradle-wrapper.jar
 
+    - name: Display Gradle version
+      run: ./gradlew --version
+
+    - name: Clean Gradle cache
+      run: |
+        rm -rf ~/.gradle/caches/
+        ./gradlew clean
+
     - name: Build with Gradle (Debug mode)
-      run: ./gradlew build --stacktrace --info
+      run: ./gradlew build --no-daemon --stacktrace --info
 
     - name: Build debug APK (Debug mode)
-      run: ./gradlew :app:assembleDebug --stacktrace --info
+      run: ./gradlew :app:assembleDebug --no-daemon --stacktrace --info
 
     - name: Upload debug APK
       uses: actions/upload-artifact@v3
