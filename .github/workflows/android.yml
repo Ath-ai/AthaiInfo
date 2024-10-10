@@ -23,24 +23,18 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Download Gradle wrapper
-      run: |
-        mkdir -p gradle/wrapper
-        wget -O gradle/wrapper/gradle-wrapper.jar https://github.com/gradle/gradle/raw/master/gradle/wrapper/gradle-wrapper.jar
+    - name: Build with Gradle
+      run: ./gradlew build --stacktrace --info --debug
 
-    - name: Display Gradle version
-      run: ./gradlew --version
+    - name: Upload build reports
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-reports
+        path: app/build/reports
 
-    - name: Clean Gradle cache
-      run: |
-        rm -rf ~/.gradle/caches/
-        ./gradlew clean
-
-    - name: Build with Gradle (Debug mode)
-      run: ./gradlew build --no-daemon --stacktrace --info
-
-    - name: Build debug APK (Debug mode)
-      run: ./gradlew :app:assembleDebug --no-daemon --stacktrace --info
+    - name: Build debug APK
+      run: ./gradlew assembleDebug --stacktrace --info --debug
 
     - name: Upload debug APK
       uses: actions/upload-artifact@v3
